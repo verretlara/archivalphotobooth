@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Photobooth Fun!</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    video, canvas {
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      max-width: 100%;
+    }
+
+    button {
+      margin-top: 12px;
+      padding: 12px 24px;
+      background-color: #6200ea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #3700b3;
+    }
+
+    .download-link {
+      display: block;
+      margin-top: 10px;
+      color: #6200ea;
+      font-weight: bold;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📸 Say Cheese! 📸</h1>
+  
+  <video id="video" width="640" height="480" autoplay></video>
+  <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+  
+  <button id="snap">Take Photo</button>
+  <a id="downloadLink" class="download-link" style="display:none;" download="photo.png">Download Photo</a>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const snapBtn = document.getElementById('snap');
+    const downloadLink = document.getElementById('downloadLink');
+
+    // Access the webcam
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => {
+        console.error("Error accessing the camera: ", err);
+      });
+
+    snapBtn.addEventListener('click', () => {
+      const context = canvas.getContext('2d');
+      canvas.style.display = 'block';
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      // Create a download link
+      const imageData = canvas.toDataURL('image/png');
+      downloadLink.href = imageData;
+      downloadLink.style.display = 'block';
+    });
+  </script>
+
+</body>
+</html>
